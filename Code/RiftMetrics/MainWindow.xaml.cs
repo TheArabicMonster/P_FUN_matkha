@@ -179,39 +179,42 @@ namespace RiftMetrics
                 var rootObject = JsonConvert.DeserializeObject<RootObject>(json); // Désérialiser en RootObject
 
                 PlotModelFromJson = new PlotModel { Title = $"Number of players per {timeFrame}" };
-                
-                foreach (var game in rootObject.Games) // Parcourir chaque jeu
-                {
-                    var lineSeries = new LineSeries { Title = game.Name };
-                    Debug.WriteLine($"Processing game: {game.Name}");
 
-                    // Gestion des données horaires
+                foreach (var game in rootObject.Games)
+                {
+                    
+                    var areaSeries = new AreaSeries
+                    {
+                        Title = game.Name,
+                        Fill = OxyColor.FromArgb(120, 0, 255, 0), // Remplissage sous la courbe (optionnel)
+                        Color = OxyColors.Green // Couleur de la ligne
+                    };
+
                     if (timeFrame == "hour")
                     {
                         foreach (var trend in game.PlayerTrends.Hourly)
                         {
-                            lineSeries.Points.Add(new DataPoint(DateTime.Parse($"{trend.Day} {trend.Hour}").ToOADate(), trend.Players));
+                            areaSeries.Points.Add(new DataPoint(DateTime.Parse($"{trend.Day} {trend.Hour}").ToOADate(), trend.Players));
                         }
                     }
-                    // Gestion des données journalières
                     else if (timeFrame == "day")
                     {
                         foreach (var trend in game.PlayerTrends.Daily)
                         {
-                            lineSeries.Points.Add(new DataPoint(DateTime.Parse(trend.Day).ToOADate(), trend.Players));
+                            areaSeries.Points.Add(new DataPoint(DateTime.Parse(trend.Day).ToOADate(), trend.Players));
                         }
                     }
-                    // Gestion des données hebdomadaires
                     else if (timeFrame == "week")
                     {
                         foreach (var trend in game.PlayerTrends.Weekly)
                         {
-                            lineSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
+                            areaSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
                         }
                     }
-                    Debug.WriteLine(lineSeries);
-                    PlotModelFromJson.Series.Add(lineSeries); // Ajouter la série au modèle
+
+                    PlotModelFromJson.Series.Add(areaSeries); 
                 }
+
                 PlotModel = PlotModelFromJson;
             }
             catch (Exception ex)

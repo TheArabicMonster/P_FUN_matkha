@@ -15,6 +15,8 @@ using System.Net.Http;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.IO;
+using OxyPlot.Wpf;
 
 namespace RiftMetrics
 {
@@ -23,9 +25,51 @@ namespace RiftMetrics
         public ObservableCollection<string> Regions { get; set; } ///Liste des régions
         public RegionData RegionData { get; set; } ///Données des régions
         public PlotModel PlotModel { get; set; } ///Modèle de graphique OxyPlot
+        public PlotModel PlotModelFromJson { get; set; }
         private Invocateur invocateur = new Invocateur(); ///Invocateur
-
         private readonly string apiKeyRiot = "RGAPI-ccd67026-76de-4a1e-b146-bc109e90c9c8"; ///Clé API de Riot Games
+
+        //TODO -> mettre toutes ces class dans un fichier a par 
+        public class RootObject
+        {
+            public string Timestamp {  get; set; }
+            public List<GameData> Games { get; set; }
+        }
+        public class GameData
+        {
+            public int AppId { get; set; }
+            public string Name { get; set; }
+            public int CurrentPlayers { get; set; }
+            public int Peak24hPlayers { get; set; }
+            public int PeakWeeklyPlayers { get; set; }
+            public int PeakMonthlyPlayers { get; set; }
+
+            [JsonProperty("player_trends")]
+            public PlayerTrends PlayerTrends { get; set; }
+        }
+        public class PlayerTrends
+        {
+            public List<HourlyTrend> Hourly {  get; set; }
+            public List<DailyTrend> Daily { get; set; }
+            public List<WeeklyTrend> Weekly { get; set; }
+        }
+        public class HourlyTrend
+        {
+            public string Day { get; set; }
+            public string Hour { get; set; }
+            public int Players { get; set; }
+        }
+        public class DailyTrend
+        {
+            public string Day { get; set; }
+            public int Players { get; set; }
+        }
+        public class WeeklyTrend
+        {
+            public string Week { get; set; }
+            public int Players { get; set; }
+        }
+
 
         public MainWindow()
         {
@@ -36,40 +80,7 @@ namespace RiftMetrics
             Regions = new ObservableCollection<string>(RegionData.Regions.Values);
             RegionComboBox.ItemsSource = Regions;
 
-            {
-                PlotModel = new PlotModel { Title = "Test graphique OxyPlot" };
-
-                var lineSeries = new LineSeries
-                {
-                    Title = "Courbe 1",
-                    MarkerType = MarkerType.Circle,
-                };
-
-                lineSeries.Points.Add(new DataPoint(0, 0));
-                lineSeries.Points.Add(new DataPoint(10, 18));
-                lineSeries.Points.Add(new DataPoint(20, 12));
-                lineSeries.Points.Add(new DataPoint(30, 8));
-                lineSeries.Points.Add(new DataPoint(40, 15));
-
-
-
-                PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Bottom, Title = "Temps" });
-                PlotModel.Axes.Add(new LinearAxis { Position = AxisPosition.Left, Title = "Nombre de joueurs" });
-                PlotModel.Series.Add(lineSeries);
-
-                var secondLineSeries = new LineSeries
-                {
-                    Title = "Courbe 2",
-                    MarkerType = MarkerType.Square
-                };
-                secondLineSeries.Points.Add(new DataPoint(0, 5));
-                secondLineSeries.Points.Add(new DataPoint(10, 10));
-                secondLineSeries.Points.Add(new DataPoint(20, 6));
-                secondLineSeries.Points.Add(new DataPoint(30, 14));
-                secondLineSeries.Points.Add(new DataPoint(40, 9));
-
-                PlotModel.Series.Add(secondLineSeries);
-            }
+            ChargerTempsTop3JeuSteam("hour");
         }
 
         /// <summary>
@@ -145,7 +156,66 @@ namespace RiftMetrics
 
         private void TimeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (TimeComboBox.SelectedItem != null)
+            {
+                string selectedTimeFrame = (TimeComboBox.SelectedItem as ComboBoxItem)?.Content.ToString();
 
+                // Effacer les séries existantes avant de redessiner
+                PlotModel.Series.Clear();
+
+                // Charger les données en fonction de la sélection
+                ChargerTempsTop3JeuSteam(selectedTimeFrame);
+
+            }
         }
+
+        private void ChargerTempsTop3JeuSteam(string timeFrame)
+        {
+            try
+            {
+                string json = File.ReadAllText("extended_player_data_top_3_steam_games.json");
+                var rootObject = JsonConvert.DeserializeObject<RootObject>(json); // Désérialiser en RootObject
+
+                PlotModelFromJson = new PlotModel { Title = $"Number of players per {timeFrame}" };
+                
+                foreach (var game in rootObject.Games) // Parcourir chaque jeu
+                {
+                    var lineSeries = new LineSeries { Title = game.Name };
+
+                    // Gestion des données horaires
+                    if (timeFrame == "hour")
+                    {
+                        foreach (var trend in game.PlayerTrends.Hourly)
+                        {
+                            lineSeries.Points.Add(new DataPoint(DateTime.Parse($"{trend.Day} {trend.Hour}").ToOADate(), trend.Players));
+                        }
+                    }
+                    // Gestion des données journalières
+                    else if (timeFrame == "day")
+                    {
+                        foreach (var trend in game.PlayerTrends.Daily)
+                        {
+                            lineSeries.Points.Add(new DataPoint(DateTime.Parse(trend.Day).ToOADate(), trend.Players));
+                        }
+                    }
+                    // Gestion des données hebdomadaires
+                    else if (timeFrame == "week")
+                    {
+                        foreach (var trend in game.PlayerTrends.Weekly)
+                        {
+                            lineSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
+                        }
+                    }
+                    Debug.WriteLine(lineSeries);
+                    PlotModelFromJson.Series.Add(lineSeries); // Ajouter la série au modèle
+                }
+                PlotModel = PlotModelFromJson;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Erreur lors du chargement des données: {ex.Message}");
+            }
+        }
+
     }
 }

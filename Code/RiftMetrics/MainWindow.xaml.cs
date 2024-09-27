@@ -165,6 +165,8 @@ namespace RiftMetrics
 
                 // Charger les données en fonction de la sélection
                 ChargerTempsTop3JeuSteam(selectedTimeFrame);
+                plotView.Model = PlotModel;
+                PlotModel.InvalidatePlot(true);
 
             }
         }
@@ -181,6 +183,7 @@ namespace RiftMetrics
                 foreach (var game in rootObject.Games) // Parcourir chaque jeu
                 {
                     var lineSeries = new LineSeries { Title = game.Name };
+                    Debug.WriteLine($"Processing game: {game.Name}");
 
                     // Gestion des données horaires
                     if (timeFrame == "hour")

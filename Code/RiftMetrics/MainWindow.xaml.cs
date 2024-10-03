@@ -180,9 +180,44 @@ namespace RiftMetrics
 
                 PlotModelFromJson = new PlotModel { Title = $"Number of players per {timeFrame}" };
 
+                var dateTimeAxis = new DateTimeAxis
+                {
+                    Position = AxisPosition.Bottom, 
+                    StringFormat = "HH:mm", 
+                    Title = "Heure",
+                    IntervalType = DateTimeIntervalType.Hours,
+                    MinorIntervalType = DateTimeIntervalType.Minutes, 
+                };
+
+                if(timeFrame == "hour")
+                {
+                    dateTimeAxis.StringFormat = "HH:mm";
+                    dateTimeAxis.IntervalType = DateTimeIntervalType.Hours;
+                    dateTimeAxis.MinorIntervalType = DateTimeIntervalType.Minutes;
+                }
+                else if (timeFrame == "day")
+                {
+                    dateTimeAxis.StringFormat = "dd MMM";
+                    dateTimeAxis.IntervalType = DateTimeIntervalType.Days;
+                }
+                else if(timeFrame == "week")
+                {
+                    dateTimeAxis.StringFormat = "dd MM";
+                    dateTimeAxis.IntervalType = DateTimeIntervalType.Weeks;
+                }
+                PlotModelFromJson.Axes.Add(dateTimeAxis);
+
+                var valueAxis = new LinearAxis
+                {
+                    Position = AxisPosition.Left,
+                    Title = "Nombre de joueurs",
+                };
+                PlotModelFromJson.Axes.Add(valueAxis);
+
+
                 foreach (var game in rootObject.Games)
                 {
-                    
+
                     var areaSeries = new AreaSeries
                     {
                         Title = game.Name,
@@ -194,6 +229,7 @@ namespace RiftMetrics
                     {
                         foreach (var trend in game.PlayerTrends.Hourly)
                         {
+                            var dateTime = DateTime.Parse($"{trend.Day} {trend.Hour}");
                             areaSeries.Points.Add(new DataPoint(DateTime.Parse($"{trend.Day} {trend.Hour}").ToOADate(), trend.Players));
                         }
                     }
@@ -201,6 +237,7 @@ namespace RiftMetrics
                     {
                         foreach (var trend in game.PlayerTrends.Daily)
                         {
+                            var dateTime = DateTime.Parse(trend.Day);
                             areaSeries.Points.Add(new DataPoint(DateTime.Parse(trend.Day).ToOADate(), trend.Players));
                         }
                     }
@@ -208,6 +245,7 @@ namespace RiftMetrics
                     {
                         foreach (var trend in game.PlayerTrends.Weekly)
                         {
+                            var dateTime = DateTime.Parse($"1 {trend.Week} 1");
                             areaSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
                         }
                     }

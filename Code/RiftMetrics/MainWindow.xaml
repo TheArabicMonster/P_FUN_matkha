@@ -51,6 +51,12 @@
         <!-- PlotView en deuxième ligne -->
         <oxy:PlotView Name="plotView" Model="{Binding PlotModel}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
 
+        <ScrollViewer Name="MatchScrollView" Grid.Row="1" Visibility="Collapsed">
+            <StackPanel Name="MatchStackPanel" Orientation="Vertical" Margin="10">
+                <!--Info des 10 dernières parties de l'utilisateur-->
+            </StackPanel>
+        </ScrollViewer>
+        
         <!--dropbox pour filtrer sur le temps, en troisième ligne-->
         <ComboBox x:Name="TimeComboBox" SelectionChanged="TimeComboBox_SelectionChanged"
                   HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Grid.Row="2">

@@ -56,7 +56,7 @@
                   HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Grid.Row="2">
             <ComboBoxItem Content="hour"/>
             <ComboBoxItem Content="day"/>
-            <ComboBoxItem Content="week"/>
+            <!--<ComboBoxItem Content="week"/>-->
         </ComboBox>
     </Grid>
 </Window>

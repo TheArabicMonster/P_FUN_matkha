@@ -200,12 +200,12 @@ namespace RiftMetrics
                     dateTimeAxis.StringFormat = "dd MMM";
                     dateTimeAxis.IntervalType = DateTimeIntervalType.Days;
                 }
-                else if(timeFrame == "week")
-                {
-                    dateTimeAxis.StringFormat = "dd MM";
-                    dateTimeAxis.IntervalType = DateTimeIntervalType.Weeks;
-                }
-                PlotModelFromJson.Axes.Add(dateTimeAxis);
+                //else if(timeFrame == "week")
+                //{
+                //    dateTimeAxis.StringFormat = "dd MM";
+                //    dateTimeAxis.IntervalType = DateTimeIntervalType.Weeks;
+                //}
+                //PlotModelFromJson.Axes.Add(dateTimeAxis);
 
                 var valueAxis = new LinearAxis
                 {
@@ -241,14 +241,14 @@ namespace RiftMetrics
                             areaSeries.Points.Add(new DataPoint(DateTime.Parse(trend.Day).ToOADate(), trend.Players));
                         }
                     }
-                    else if (timeFrame == "week")
-                    {
-                        foreach (var trend in game.PlayerTrends.Weekly)
-                        {
-                            var dateTime = DateTime.Parse($"1 {trend.Week} 1");
-                            areaSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
-                        }
-                    }
+                    //else if (timeFrame == "week")
+                    //{
+                    //    foreach (var trend in game.PlayerTrends.Weekly)
+                    //    {
+                    //        var dateTime = DateTime.Parse($"1 {trend.Week} 1");
+                    //        areaSeries.Points.Add(new DataPoint(DateTime.Parse($"1 {trend.Week} 1").ToOADate(), trend.Players));
+                    //    }
+                    //}
 
                     PlotModelFromJson.Series.Add(areaSeries); 
                 }

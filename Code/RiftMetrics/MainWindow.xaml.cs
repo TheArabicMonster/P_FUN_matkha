@@ -32,7 +32,7 @@ namespace RiftMetrics
         //TODO -> mettre toutes ces class dans un fichier a par 
         public class RootObject
         {
-            public string Timestamp {  get; set; }
+            public string Timestamp { get; set; }
             public List<GameData> Games { get; set; }
         }
         public class GameData
@@ -49,7 +49,7 @@ namespace RiftMetrics
         }
         public class PlayerTrends
         {
-            public List<HourlyTrend> Hourly {  get; set; }
+            public List<HourlyTrend> Hourly { get; set; }
             public List<DailyTrend> Daily { get; set; }
             public List<WeeklyTrend> Weekly { get; set; }
         }
@@ -90,7 +90,7 @@ namespace RiftMetrics
         /// <param name="e"></param>
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(RegionComboBox.SelectedItem != null)
+            if (RegionComboBox.SelectedItem != null)
             {
                 invocateur.Region = RegionComboBox.SelectedItem.ToString();
                 Debug.WriteLine(invocateur.Region);
@@ -182,14 +182,14 @@ namespace RiftMetrics
 
                 var dateTimeAxis = new DateTimeAxis
                 {
-                    Position = AxisPosition.Bottom, 
-                    StringFormat = "HH:mm", 
+                    Position = AxisPosition.Bottom,
+                    StringFormat = "HH:mm",
                     Title = "Heure",
                     IntervalType = DateTimeIntervalType.Hours,
-                    MinorIntervalType = DateTimeIntervalType.Minutes, 
+                    MinorIntervalType = DateTimeIntervalType.Minutes,
                 };
 
-                if(timeFrame == "hour")
+                if (timeFrame == "hour")
                 {
                     dateTimeAxis.StringFormat = "HH:mm";
                     dateTimeAxis.IntervalType = DateTimeIntervalType.Hours;
@@ -205,7 +205,7 @@ namespace RiftMetrics
                 //    dateTimeAxis.StringFormat = "dd MM";
                 //    dateTimeAxis.IntervalType = DateTimeIntervalType.Weeks;
                 //}
-                //PlotModelFromJson.Axes.Add(dateTimeAxis);
+                PlotModelFromJson.Axes.Add(dateTimeAxis);
 
                 var valueAxis = new LinearAxis
                 {
@@ -250,7 +250,7 @@ namespace RiftMetrics
                     //    }
                     //}
 
-                    PlotModelFromJson.Series.Add(areaSeries); 
+                    PlotModelFromJson.Series.Add(areaSeries);
                 }
 
                 PlotModel = PlotModelFromJson;
@@ -261,5 +261,24 @@ namespace RiftMetrics
             }
         }
 
+        private async void Get10DerniersMatchs()
+        {
+            try
+            {
+                string url = $"https://{invocateur.Region}.api.riotgames.com/lol/match/v4/matchlists/by-account/{invocateur.Id}?api_key={apiKeyRiot}";
+                using (HttpClient client = new HttpClient())
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    response.EnsureSuccessStatusCode();
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    Debug.WriteLine(responseBody);
+                }
+            }
+            catch (HttpRequestException e)
+            {
+                Debug.WriteLine("\nException Caught!");
+                Debug.WriteLine("Message :{0} ", e.Message);
+            }
+        }
     }
 }

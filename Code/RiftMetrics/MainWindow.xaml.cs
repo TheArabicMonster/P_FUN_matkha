@@ -143,7 +143,7 @@ namespace RiftMetrics
             }
             else
             {
-
+                Get10DerniersMatchs();
                 Debug.WriteLine("Recherche de l'invocateur " + invocateur.Nom + " avec l'id " + invocateur.Id + " dans la région " + invocateur.Region + " dans le cluster " + invocateur.Clusters);
             }
 
@@ -266,6 +266,7 @@ namespace RiftMetrics
             try
             {
                 string url = $"https://{invocateur.Region}.api.riotgames.com/lol/match/v4/matchlists/by-account/{invocateur.Id}?api_key={apiKeyRiot}";
+                Debug.WriteLine(url);
                 using (HttpClient client = new HttpClient())
                 {
                     HttpResponseMessage response = await client.GetAsync(url);

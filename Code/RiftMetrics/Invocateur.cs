@@ -12,5 +12,6 @@ namespace RiftMetrics
         public string Clusters { get; set; }
         public string Nom { get; set; }
         public string Id { get; set; }
+        public string Puuid { get; set; }
     }
 }

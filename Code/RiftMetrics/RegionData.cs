@@ -55,14 +55,7 @@ namespace RiftMetrics
         public string ClusterDepuisRegion(string region)
         {
             string regionCode = RegionCodeDepuisNom(region);
-            foreach(var c in RegionClusters)
-            {
-                if (c.Value.Contains(regionCode))
-                {
-                    return c.Key;
-                }
-            }
-            return "unkownCluster";
+            return RegionClusters.FirstOrDefault(c => c.Value.Contains(regionCode)).Key ?? "unkownCluster";
         }
 
         /// <summary>
@@ -72,11 +65,7 @@ namespace RiftMetrics
         /// <returns></returns>
         private string RegionCodeDepuisNom(string region)
         {
-            foreach(var r in Regions)
-            {
-                if(r.Value == region) return r.Key;
-            }
-            return "unkownRegionCode";
+            return Regions.FirstOrDefault(r => r.Value == region).Key  ?? "unkownCluster";
         }
     }
 }

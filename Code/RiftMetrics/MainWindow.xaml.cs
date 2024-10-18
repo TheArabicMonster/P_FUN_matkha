@@ -144,6 +144,43 @@ namespace RiftMetrics
 
             return dataPoints;
         }
+
+        /// <summary>
+        /// Affiche le graphique avec les données fournies
+        /// </summary>
+        /// <param name="data">Liste des points de données pour le graphique</param>
+        /// <param name="fileName">Nom du fichier</param>
+        private void DisplayGraph(List<DataPoint> data, string fileName)
+        {
+            // Crée un nouveau modèle de graphique avec le titre du fichier
+            var plotModel = new PlotModel { Title = fileName };
+
+            // Crée une série de lignes pour les points de données
+            var series = new LineSeries();
+            series.Points.AddRange(data);
+
+            // Ajoute la série au modèle de graphique
+            plotModel.Series.Add(series);
+
+            // Crée une vue de graphique
+            var plotView = new PlotView
+            {
+                Model = plotModel
+            };
+
+            // Crée un nouvel onglet avec le nom du fichier comme en-tête et la vue de graphique comme contenu
+            var tabItem = new TabItem
+            {
+                Header = fileName,
+                Content = plotView
+            };
+
+            // Ajoute l'onglet à l'élément TabControl
+            tabControl.Items.Add(tabItem);
+        }
+
+
+
         /// <summary>
         /// Méthode appelée lors de la sélection d'une région dans la ComboBox
         /// </summary>

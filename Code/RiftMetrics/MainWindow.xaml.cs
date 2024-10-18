@@ -17,6 +17,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using System.IO;
 using OxyPlot.Wpf;
+using CsvHelper;
 
 namespace RiftMetrics
 {
@@ -81,6 +82,33 @@ namespace RiftMetrics
             RegionComboBox.ItemsSource = Regions;
 
             ChargerTempsTop3JeuSteam("hour");
+        }
+
+        private void Window_Drop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+            {
+                string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                foreach (string file in files)
+                {
+                    // Vérifier le type de fichier et appeler la bonne méthode
+                    if (file.EndsWith(".csv"))
+                    {
+                        var data = ReadCsv(file);
+                        DisplayGraph(data, System.IO.Path.GetFileName(file));
+                    }
+                    else if (file.EndsWith(".json"))
+                    {
+                        var data = ReadJson(file); // Désérialisation structurée du JSON
+                        DisplayGraph(data, System.IO.Path.GetFileName(file));
+                    }
+                    else
+                    {
+                        MessageBox.Show("Format de fichier non supporté.");
+                    }
+                }
+            }
         }
 
         /// <summary>

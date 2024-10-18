@@ -7,7 +7,8 @@
     xmlns:oxy="http://oxyplot.org/wpf" x:Class="RiftMetrics.MainWindow"
     Background="AliceBlue"
     mc:Ignorable="d"
-    Title="MainWindow" Height="450" Width="800">
+    Title="MainWindow" Height="450" Width="800"
+    AllowDrop="True" Drop="Window_Drop">
 
     <Grid>
         <Grid.RowDefinitions>
@@ -30,6 +31,7 @@
                 <!--Boutton de recherche-->
                 <Button Content="Chercher" Width="62" Margin="5" Click="Boutton_Recherche_Click" Height="20"/>
 
+                <!-- Boutons avec images -->
                 <Button Background="#FF8C929E">
                     <Image Source="Asset/Combo_Chart.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
@@ -48,15 +50,16 @@
             </StackPanel>
         </Grid>
 
-        <!-- PlotView en deuxième ligne -->
-        <oxy:PlotView Name="plotView" Model="{Binding PlotModel}" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+        <!-- TabControl pour les graphiques -->
+        <Grid Grid.Row="1" Background="LightGray" AllowDrop="True" Drop="Window_Drop">
+            <TabControl x:Name="tabControl" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <!-- premier onglet avec les données des top 3 jeux steam -->
+                <TabItem Header="Graphique">
+                    <oxy:PlotView Name="plotView" Model="{Binding PlotModel}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                </TabItem>
+            </TabControl>
+        </Grid>
 
-        <ScrollViewer Name="MatchScrollView" Grid.Row="1" Visibility="Collapsed">
-            <StackPanel Name="MatchStackPanel" Orientation="Vertical" Margin="10">
-                <!--Info des 10 dernières parties de l'utilisateur-->
-            </StackPanel>
-        </ScrollViewer>
-        
         <!--dropbox pour filtrer sur le temps, en troisième ligne-->
         <ComboBox x:Name="TimeComboBox" SelectionChanged="TimeComboBox_SelectionChanged"
                   HorizontalAlignment="Right" VerticalAlignment="Center" Margin="10" Grid.Row="2">

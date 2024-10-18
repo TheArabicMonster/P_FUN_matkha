@@ -111,6 +111,39 @@ namespace RiftMetrics
             }
         }
 
+        private List<DataPoint> ReadCsv(string filePath)
+        {
+            using (var reader = new StreamReader(filePath))
+            {
+                var records = new List<dynamic>();
+                using (var csv = new CsvHelper.CsvReader(reader, System.Globalization.CultureInfo.InvariantCulture))
+                {
+                    records = csv.GetRecords<dynamic>().ToList();
+                }
+                return records.Select((r, i) => new DataPoint(i, Convert.ToDouble(r.Value))).ToList();
+            }
+        }
+
+        private List<DataPoint> ReadJson(string filePath)
+        {
+            var json = File.ReadAllText(filePath);
+
+            // Désérialisation en objet structuré
+            var rootObject = JsonConvert.DeserializeObject<RootObject>(json);
+
+            // Extraction des données pour les afficher dans un graphique
+            var dataPoints = new List<DataPoint>();
+
+            // Exemple : Si on veut afficher les joueurs d'une série horaire pour le premier jeu dans la liste
+            foreach (var hourlyData in rootObject.Games[0].PlayerTrends.Hourly)
+            {
+                // On peut utiliser DateTime pour une visualisation plus claire
+                var dateTime = DateTime.Parse($"{hourlyData.Day} {hourlyData.Hour}");
+                dataPoints.Add(new DataPoint(DateTimeAxis.ToDouble(dateTime), hourlyData.Players));
+            }
+
+            return dataPoints;
+        }
         /// <summary>
         /// Méthode appelée lors de la sélection d'une région dans la ComboBox
         /// </summary>

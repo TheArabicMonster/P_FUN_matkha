@@ -84,6 +84,11 @@ namespace RiftMetrics
             ChargerTempsTop3JeuSteam("hour");
         }
 
+        /// <summary>
+        /// Méthode appelée lorsqu'un fichier est déposé dans la fenêtre
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -111,6 +116,11 @@ namespace RiftMetrics
             }
         }
 
+        /// <summary>
+        /// Lit un fichier CSV et retourne une liste de points de données
+        /// </summary>
+        /// <param name="filePath">Chemin du fichier CSV</param>
+        /// <returns>Liste de points de données</returns>
         private List<DataPoint> ReadCsv(string filePath)
         {
             using (var reader = new StreamReader(filePath))
@@ -124,20 +134,19 @@ namespace RiftMetrics
             }
         }
 
+        /// <summary>
+        /// Lit un fichier JSON et retourne une liste de points de données
+        /// </summary>
+        /// <param name="filePath">Chemin du fichier JSON</param>
+        /// <returns>Liste de points de données</returns>
         private List<DataPoint> ReadJson(string filePath)
         {
             var json = File.ReadAllText(filePath);
-
-            // Désérialisation en objet structuré
             var rootObject = JsonConvert.DeserializeObject<RootObject>(json);
-
-            // Extraction des données pour les afficher dans un graphique
             var dataPoints = new List<DataPoint>();
 
-            // Exemple : Si on veut afficher les joueurs d'une série horaire pour le premier jeu dans la liste
             foreach (var hourlyData in rootObject.Games[0].PlayerTrends.Hourly)
             {
-                // On peut utiliser DateTime pour une visualisation plus claire
                 var dateTime = DateTime.Parse($"{hourlyData.Day} {hourlyData.Hour}");
                 dataPoints.Add(new DataPoint(DateTimeAxis.ToDouble(dateTime), hourlyData.Players));
             }

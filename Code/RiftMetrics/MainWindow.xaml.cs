@@ -89,7 +89,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Window_Drop(object sender, DragEventArgs e)
+        public void Window_Drop(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
@@ -121,7 +121,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="filePath">Chemin du fichier CSV</param>
         /// <returns>Liste de points de données</returns>
-        private List<DataPoint> ReadCsv(string filePath)
+        public List<DataPoint> ReadCsv(string filePath)
         {
             using (var reader = new StreamReader(filePath))
             {
@@ -139,7 +139,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="filePath">Chemin du fichier JSON</param>
         /// <returns>Liste de points de données</returns>
-        private List<DataPoint> ReadJson(string filePath)
+        public List<DataPoint> ReadJson(string filePath)
         {
             var json = File.ReadAllText(filePath);
             var rootObject = JsonConvert.DeserializeObject<RootObject>(json);
@@ -159,7 +159,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="data">Liste des points de données pour le graphique</param>
         /// <param name="fileName">Nom du fichier</param>
-        private void DisplayGraph(List<DataPoint> data, string fileName)
+        public void DisplayGraph(List<DataPoint> data, string fileName)
         {
             // Crée un nouveau modèle de graphique avec le titre du fichier
             var plotModel = new PlotModel { Title = fileName };
@@ -195,7 +195,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (RegionComboBox.SelectedItem != null)
             {
@@ -209,7 +209,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void NomInvocateur_TextChanged(object sender, TextChangedEventArgs e)
+        public void NomInvocateur_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
 
@@ -240,7 +240,7 @@ namespace RiftMetrics
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void Boutton_Recherche_Click(object sender, RoutedEventArgs e)
+        public void Boutton_Recherche_Click(object sender, RoutedEventArgs e)
         {
 
             if (string.IsNullOrEmpty(invocateur.Region) || string.IsNullOrEmpty(invocateur.Nom))
@@ -255,13 +255,13 @@ namespace RiftMetrics
             }
 
         }
-        private void ImageButton_Click(object sender, RoutedEventArgs e)
+        public void ImageButton_Click(object sender, RoutedEventArgs e)
         {
             // Logique à exécuter lorsque l'un des boutons avec images est cliqué
             MessageBox.Show("Bouton image cliqué !");
         }
 
-        private void TimeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        public void TimeComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (TimeComboBox.SelectedItem != null)
             {
@@ -278,7 +278,7 @@ namespace RiftMetrics
             }
         }
 
-        private void ChargerTempsTop3JeuSteam(string timeFrame)
+        public void ChargerTempsTop3JeuSteam(string timeFrame)
         {
             try
             {
@@ -368,7 +368,7 @@ namespace RiftMetrics
             }
         }
 
-        private async void Get10DerniersMatchs()
+        public async void Get10DerniersMatchs()
         {
             try
             {

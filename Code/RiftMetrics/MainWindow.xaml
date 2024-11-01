@@ -32,19 +32,19 @@
                 <Button Content="Chercher" Width="62" Margin="5" Click="Boutton_Recherche_Click" Height="20"/>
 
                 <!-- Boutons avec images -->
-                <Button Background="#FF8C929E">
+                <Button Background="#FF8C929E" Visibility="Collapsed">
                     <Image Source="Asset/Combo_Chart.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
-                <Button Background="#FF8C929E">
+                <Button Background="#FF8C929E" Visibility="Collapsed">
                     <Image Source="Asset/Attack_damage_icon.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
-                <Button Background="#FF8C929E">
+                <Button Background="#FF8C929E" Visibility="Collapsed">
                     <Image Source="Asset/Champion_icon.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
-                <Button Background="#FF8C929E">
+                <Button Background="#FF8C929E" Visibility="Collapsed">
                     <Image Source="Asset/Gold_icon.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
-                <Button Background="#FF8C929E">
+                <Button Background="#FF8C929E" Visibility="Collapsed">
                     <Image Source="Asset/Minion_icon.png" Stretch="Uniform" Width="50" Height="50" Margin="5"/>
                 </Button>
             </StackPanel>
